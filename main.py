@@ -2,7 +2,7 @@
 
 # Sources: http://kidscancode.org/blog/2016/08/pygame_1-1_getting-started/
 # I did not change anything
-# Seeing if it can commit to git hub properly -- another test round
+# Seeing if it can commit to git hub properly -- test round
 # import libs
 import pygame as pg 
 import random
