@@ -11,4 +11,5 @@ WHITE = (255, 255, 0)
 FPS = 60
 RUNNING = True 
 SCORE = 1
+PAUSED = False
 
