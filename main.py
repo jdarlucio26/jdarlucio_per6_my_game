@@ -1,11 +1,25 @@
 # File created by: Joshua Darlucio
 
 # Sources: http://kidscancode.org/blog/2016/08/pygame_1-1_getting-started/
-# I did not change anything
-# Seeing if it can commit to git hub properly -- test round 2
+
+
+'''
+My goal is:
+- allow the player to continue to jump up
+- add a timer to see how fast the player can go
+
+How to reach the goal:
+I will continue to player to jump up, but block the player from going out of the sides.
+Then I will have an ending point. Once the player reaches the ending point, the timer will start.
+I will also try to let them play again, without closing out of the screen. 
+
+Reach Goal:
+Have the player have only 3 lives and if the player falls onto a disappearing block and falls to the bottom
+they loose a life. 
+
+'''
 # import libs
-import pygame as pg 
-import random
+import pygame as pg
 import os
 # import settings 
 from settings import *
@@ -16,7 +30,7 @@ from sprites import *
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
 
-# create game class in order to pass proprties to the sprites file
+# create game class in order to pass properties to the sprites file
 
 class Game:
     def __init__(self):
@@ -27,15 +41,25 @@ class Game:
         pg.display.set_caption("my game")
         self.clock = pg.time.Clock()
         self.running = True
-
+        print(self.screen)
     def new(self):
-        # Starting a new game
+        # starting a new game
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
         self.enemies = pg.sprite.Group()
         self.player = Player(self)
+        self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
+        # self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
+        self.all_sprites.add(self.plat1)
+
+        self.platforms.add(self.plat1)
+        
         self.all_sprites.add(self.player)
+        for plat in PLATFORM_LIST:
+            p = Platform(*plat)
+            self.all_sprites.add(p)
+            self.platforms.add(p)
         for i in range(0,10):
             m = Mob(20,20,(0,255,0))
             self.all_sprites.add(m)
@@ -53,20 +77,30 @@ class Game:
         for event in pg.event.get():
             if event.type == pg.QUIT:
                 if self.playing:
-                    self.playing = False 
+                    self.playing = False
                 self.running = False
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
-    
     def update(self):
         self.all_sprites.update()
+        if self.player.vel.y > 0:
+            hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+            if hits:
+                if hits[0].variant == "disappearing":
+                    hits[0].kill()
+                elif hits[0].variant == "bouncey":
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = -PLAYER_JUMP
+                else:
+                    self.player.pos.y = hits[0].rect.top
+                    self.player.vel.y = 0
 
     def draw(self):
         self.screen.fill(BLUE)
         self.all_sprites.draw(self.screen)
+        # is this a method or a function?
         pg.display.flip()
-    # This is a method because it is inside the function; however we need to add self.
     def draw_text(self, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
@@ -78,11 +112,11 @@ class Game:
         x,y = pg.mouse.get_pos()
         return (x,y)
 
-
+# instantiate the game class...
 g = Game()
 
+# kick off the game loop
 while g.running:
     g.new()
-
 
 pg.quit()
