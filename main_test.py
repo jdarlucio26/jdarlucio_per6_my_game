@@ -5,8 +5,10 @@
 
 '''
 My goal is:
-- create a fire and water Mob. If hit by a Mob will die
-- Add a score. Needs to get to 5000 points to win. Each jump to new platform equals 100 points
+- create a fire and water Mob. If hit by a Mob will loose 50 points
+- Every plat hit, earns 100 points
+- Add more platforms
+- Add a score to screen.Each jump to new platform equals 100 points
 
 How to reach the goal:
 - Get scoreboard. Associate the plats with a score
@@ -21,8 +23,8 @@ they loose a life.
 import pygame as pg
 import os
 # import settings 
-from settings import *
-from sprites import *
+from settings_test import *
+from sprites_test import *
 # from pg.sprite import Sprite
 
 # set up assets folders
@@ -30,7 +32,6 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
 
 # create game class in order to pass properties to the sprites file
-
 class Game:
     def __init__(self):
         # init game window etc.
@@ -49,7 +50,6 @@ class Game:
         self.enemies = pg.sprite.Group()
         self.player = Player(self)
         self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
-        # self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
         self.all_sprites.add(self.plat1)
 
         self.platforms.add(self.plat1)
@@ -59,10 +59,14 @@ class Game:
             p = Platform(*plat)
             self.all_sprites.add(p)
             self.platforms.add(p)
-        for i in range(0,10):
-            m = Mob(20,20,(0,255,0))
+        for i in range(0,6):
+            m = Mob(20,20,(0, 117, 119))
+            # f = MobF(15,20,(178, 34, 34))
             self.all_sprites.add(m)
+            # self.all_sprites.add(f)
             self.enemies.add(m)
+            # self.enemies.add(f)
+
         self.run()
     def run(self):
         self.playing = True
@@ -83,8 +87,14 @@ class Game:
                     self.player.jump()
     def update(self):
         self.all_sprites.update()
+        plathits = pg.sprite.spritecollide(self.player, self.enemies, False)
+        if plathits:
+            plathits[0].attached_now = True
+            self.score += 10
+            print(self.score)
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
+            self.player.standing = True
             if hits:
                 if hits[0].variant == "disappearing":
                     hits[0].kill()
@@ -98,6 +108,8 @@ class Game:
     def draw(self):
         self.screen.fill(BLUE)
         self.all_sprites.draw(self.screen)
+        if self.player.standing:
+            self.draw_text(self.score, 24, WHITE, WIDTH/2, HEIGHT/2)
         # is this a method or a function?
         pg.display.flip()
     def draw_text(self, text, size, color, x, y):
@@ -110,6 +122,7 @@ class Game:
     def get_mouse_now(self):
         x,y = pg.mouse.get_pos()
         return (x,y)
+
 
 # instantiate the game class...
 g = Game()
