@@ -5,9 +5,8 @@
 
 '''
 My goal is:
-- create a fire and water Mob. If hit by a Mob will die
-- Add a score. Needs to get to 5000 points to win. Each jump to new platform equals 100 points
-
+- create a fire mob. Fire mob will make player lose points, if hit
+- add scoreboard
 How to reach the goal:
 - Get scoreboard. Associate the plats with a score
 - Create a new Mob 
@@ -46,23 +45,33 @@ class Game:
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
-        self.enemies = pg.sprite.Group()
+        self.fire = pg.sprite.Group()
+        self.water = pg.sprite.Group()
         self.player = Player(self)
-        self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
-        # self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (150,150,150), "normal")
+        self.plat1 = Platform(WIDTH, 50, 0, HEIGHT-50, (39,64,96), "normal")
+        self.plat2 = Platform(WIDTH, 500, 0, HEIGHT-50, (39,64,96), "normal")
+        # Creating the bottom platform
         self.all_sprites.add(self.plat1)
-
         self.platforms.add(self.plat1)
-        
+        self.all_sprites.add(self.plat2)
+        self.platforms.add(self.plat2)
+        # Creating player/block
         self.all_sprites.add(self.player)
+        # Creates the platforms listed in settins
         for plat in PLATFORM_LIST:
             p = Platform(*plat)
             self.all_sprites.add(p)
             self.platforms.add(p)
-        for i in range(0,10):
-            m = Mob(20,20,(0,255,0))
+        # Creates the different types of Mobs on screen
+        for i in range(0,15):
+            m = Mob(20,20,(0,200,255))
             self.all_sprites.add(m)
-            self.enemies.add(m)
+            self.water.add(m)
+        for i in range(0,15):
+            f = FireMob(24,24,(255,0,0))
+            self.all_sprites.add(f)
+            self.fire.add(f)
+    # This allows the code to draw, updat, and use the keyboard to make the block move and draw text on screen
         self.run()
     def run(self):
         self.playing = True
@@ -71,7 +80,7 @@ class Game:
             self.events()
             self.update()
             self.draw()
-    
+    # This will allow the block to jump when the spacebar gets clicked on
     def events(self):
         for event in pg.event.get():
             if event.type == pg.QUIT:
@@ -81,8 +90,16 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
+    # This will update the code/player by adding score.
     def update(self):
         self.all_sprites.update()
+        fhits = pg.sprite.spritecollide(self.player, self.fire, False)
+        whits = pg.sprite.spritecollide(self.player, self.water, False)
+        if fhits:
+            self.score -= 0.5
+        elif whits:
+            self.score += 0.5
+        # This determines what type of platform the block hits and what the platform will do
         if self.player.vel.y > 0:
             hits = pg.sprite.spritecollide(self.player, self.platforms, False)
             if hits:
@@ -94,12 +111,15 @@ class Game:
                 else:
                     self.player.pos.y = hits[0].rect.top
                     self.player.vel.y = 0
-
+# This will draw the background and any other text (including score)
     def draw(self):
-        self.screen.fill(BLUE)
+        self.screen.fill(BLACK)
         self.all_sprites.draw(self.screen)
+        self.draw_text("Red = Fire (Loose point); Blue = Water (Earn point)", 24, (251,252,255), 400, 560)
+        self.draw_text(str(self.score), 24, WHITE, 400, 5)
         # is this a method or a function?
         pg.display.flip()
+# This is to draw text on the screen.
     def draw_text(self, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
