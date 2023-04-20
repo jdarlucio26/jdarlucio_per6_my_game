@@ -120,7 +120,7 @@ class Mob(Sprite):
         self.pos += self.vel
         self.rect.center = self.pos
 
-# Creating the Fire Mobs
+# Creating the Fire Mobs. This Mob will be red and will make player loose points. 
 class FireMob(Sprite):
     def __init__(self,width,height, color):
         Sprite.__init__(self)
@@ -135,7 +135,7 @@ class FireMob(Sprite):
         self.vel = vec(randint(1,2),randint(1,3))
         self.acc = vec(1,1)
         self.cofric = 0.22
-    # Allows to stay in bounds of the screen
+    # Allows the fire mob to stay in bounds of the screen
     def inbounds(self):
         if self.rect.x > WIDTH:
             self.vel.x *= -1

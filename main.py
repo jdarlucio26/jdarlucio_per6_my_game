@@ -8,7 +8,7 @@ My goal is:
 - create a fire mob. Fire mob will make player lose points, if hit
 - add scoreboard
 How to reach the goal:
-- Get scoreboard. Associate the plats with a score
+- Get scoreboard. Associate the Mobs with a score
 - Create a new Mob 
 
 Reach Goal:
@@ -41,7 +41,7 @@ class Game:
         self.running = True
         print(self.screen)
     def new(self):
-        # starting a new game
+        # starting a new game. Adding platforms, mobs, and players
         self.score = 0
         self.all_sprites = pg.sprite.Group()
         self.platforms = pg.sprite.Group()
@@ -90,7 +90,7 @@ class Game:
             if event.type == pg.KEYDOWN:
                 if event.key == pg.K_SPACE:
                     self.player.jump()
-    # This will update the code/player by adding score.
+    # This will update the player by adding score when it touches the mob.
     def update(self):
         self.all_sprites.update()
         fhits = pg.sprite.spritecollide(self.player, self.fire, False)

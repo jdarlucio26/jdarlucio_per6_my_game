@@ -1,11 +1,15 @@
+# Pygame box that shows screen.
 WIDTH = 800
 HEIGHT = 600
+# Player acceleration, jump, gravity, and friction
 PLAYER_ACC = 2
 PLAYER_JUMP = 20
 PLAYER_FRICTION = -0.5
 PLAYER_GRAV = 0.8
+# Mob acceleration, jump, gravity, and friction
 MOB_ACC = 2
 MOB_FRICTION = -0.5
+# Colors for different things
 BLACK = (0,0,0)
 BLUE = (50,50,255)
 RED = (255,50,50)
