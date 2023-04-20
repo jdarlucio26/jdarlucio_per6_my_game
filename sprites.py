@@ -25,21 +25,13 @@ class Player(Sprite):
         self.standing = False
     def input(self):
         keystate = pg.key.get_pressed()
-        # if keystate[pg.K_w]:
-        #     self.acc.y = -PLAYER_ACC
+        
         if keystate[pg.K_a]:
             self.acc.x = -PLAYER_ACC
-        # if keystate[pg.K_s]:
-        #     self.acc.y = PLAYER_ACC
+    
         if keystate[pg.K_d]:
             self.acc.x = PLAYER_ACC
-        # if keystate[pg.K_p]:
-        #     if PAUSED == False:
-        #         PAUSED = True
-        #         print(PAUSED)
-        #     else:
-        #         PAUSED = False
-        #         print(PAUSED)
+     
     # ...
     def jump(self):
         self.rect.x += 1
@@ -61,6 +53,7 @@ class Player(Sprite):
             print("i am off the bottom of the screen")
         if self.rect.y < 0:
             print("i am off the top of the screen...")
+
     def mob_collide(self):
             hits = pg.sprite.spritecollide(self, self.game.enemies, True)
             if hits:
@@ -88,6 +81,8 @@ class Player(Sprite):
         self.vel += self.acc
         self.pos += self.vel + 0.5 * self.acc
         self.rect.midbottom = self.pos
+
+    
 # These are the requirements for a Mob. Will generate exactly asked on the screen. 
 class Mob(Sprite):
     def __init__(self,width,height, color):
