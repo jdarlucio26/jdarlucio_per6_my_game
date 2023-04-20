@@ -76,6 +76,7 @@ class Player(Sprite):
                 print(SCORE)
     def update(self):
         self.acc = vec(0, PLAYER_GRAV)
+        self.inbounds()
         self.acc.x = self.vel.x * PLAYER_FRICTION
         self.input()
         self.vel += self.acc
